@@ -34,3 +34,19 @@ model = tflearn.lstm(model, 512)
 model = tflearn.dropout(model, 0.5)
 
 model = tflearn.fully_connected(model, len(char_idx), activation="softmax")
+
+# Generate city names
+model = tflearn.SequenceGenerator(model,
+                                  dictionary=char_idx,
+                                  seq_maxlen=maxlen,
+                                  clip_gradients=5.0,
+                                  checkpoint_path="model_us_cities")
+
+# training
+for i in range(40):
+    seed = random_sequence_from_textfile(data_path, maxlen)
+    model.fit(X, Y, validation_set=0.2, batch_size=128, n_epoch=1, run_id='us_cities')
+
+    print("Testing 0.5:", model.generate(30, temperature=0.5,seq_seed=seed))
+    print("Testing 1.0:", model.generate(30, temperature=1.0,seq_seed=seed))
+    print("Testing 1.2:", model.generate(30, temperature=1.2,seq_seed=seed))
