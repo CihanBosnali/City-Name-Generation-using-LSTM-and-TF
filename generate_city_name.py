@@ -9,14 +9,7 @@ import ssl
 import tflearn
 from tflearn.data_utils import *
 
-# Get data
-data_path = "US_cities.txt"
-
-if not os.path.isfile(data_path):
-    context = ssl._create_unverified_context()
-    # Get US names dataset
-    moves.urllib.request.urlretrieve("https://raw.githubusercontent.com/tflearn/tflearn.github.io/master/resources/US_Cities.txt", path, context=context)
-
+data_path = "dataset.txt"
 
 # Maximum length of generated names
 maxlen = 20
@@ -37,6 +30,9 @@ model = tflearn.dropout(model, 0.5)
 
 model = tflearn.fully_connected(model, len(char_idx), activation="softmax")
 
+model = tflearn.regression(model, optimizer='adam', loss='categorical_crossentropy',
+                       learning_rate=0.001)
+
 # Generate city names
 model = tflearn.SequenceGenerator(model,
                                   dictionary=char_idx,
@@ -47,7 +43,7 @@ model = tflearn.SequenceGenerator(model,
 # training
 for i in range(40):
     seed = random_sequence_from_textfile(data_path, maxlen)
-    model.fit(X, Y, validation_set=0.2, batch_size=128, n_epoch=1, run_id='us_cities')
+    model.fit(X, Y, validation_set=0.2, batch_size=128, n_epoch=1)
 
     print("Testing 0.5:", model.generate(30, temperature=0.5,seq_seed=seed))
     print("Testing 1.0:", model.generate(30, temperature=1.0,seq_seed=seed))
