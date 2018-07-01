@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 import os
+
 from six import moves
 
 import ssl
@@ -14,7 +15,8 @@ data_path = "US_cities.txt"
 if not os.path.isfile(data_path):
     context = ssl._create_unverified_context()
     # Get US names dataset
-    moves.urllib.request.urlretrieve("https://raw.githubusercontent.com/tflearn/tflearn.github.io/master/resources/US_Cities.txt", data_path, context=context)
+    moves.urllib.request.urlretrieve("https://raw.githubusercontent.com/tflearn/tflearn.github.io/master/resources/US_Cities.txt", path, context=context)
+
 
 # Maximum length of generated names
 maxlen = 20
